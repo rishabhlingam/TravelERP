@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Sat Jul 24 09:07:22 IST 2021:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a816c00e-017a-d696-b2c4-00000382a080 
+on database directory /home/rishabh/Project/Springboot/TravelERP/mydb with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@512ddf17 
+Loaded from file:/home/rishabh/.m2/repository/org/apache/derby/derby/10.14.2.0/derby-10.14.2.0.jar
+java.vendor=Oracle Corporation
+java.runtime.version=11.0.11+9-LTS-194
+user.dir=/home/rishabh/Project/Springboot/TravelERP
+os.name=Linux
+os.arch=amd64
+os.version=5.11.0-7620-generic
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
