@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h3 th:text="${package.name}"></h3>
+<ul>
+    <li th:text="'maximum capacity: ' + ${package.capacity}"/>
+    <li>List of destinations:</li>
+    <ul th:each="destination : ${package.itinerary.destinations}">
+        <li th:text="${destination.name}"/>
+        <li>Activities available: </li>
+        <ul th:each="activity : ${destination.activities}">
+            <li th:text="'Activity name: ' + ${activity.name}" />
+            <ul>
+                <li th:text="'description: ' + ${activity.description}" />
+                <li th:text="'cost: ' + ${activity.cost}" />
+                <li th:text="'capacity: ' + ${activity.capacity}" />
+            </ul>
+        </ul>
+    </ul>
+</ul>
+</body>
+</html>

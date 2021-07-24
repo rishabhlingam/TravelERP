@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +21,8 @@ import com.rishabhlingam.travelerp.services.DestinationService;
 import com.rishabhlingam.travelerp.services.ItineraryService;
 import com.rishabhlingam.travelerp.services.TravelPackageService;
 
-@RestController
+//@RestController
+@Controller
 public class TravelPackageController {
 	@Autowired
 	private ActivityService activityService;
@@ -31,13 +34,17 @@ public class TravelPackageController {
 	private TravelPackageService travelPackageService;
 	
 	@RequestMapping("/travelPackages")
-	public List<TravelPackage> getAllDestinations() {
-		return travelPackageService.getAllTravelPackages();
+	public String getAllDestinations(Model model) {
+		List<TravelPackage> packages = travelPackageService.getAllTravelPackages();
+		model.addAttribute("packages", packages);
+		return "viewTravelPackages";
 	}
 	
 	@RequestMapping("/travelPackages/{id}")
-	public Destination getItineraryById(@PathVariable String id) {
-		return null;
+	public String getItineraryById(@PathVariable String id, Model model) {
+		TravelPackage travelPackage = travelPackageService.findById(id);
+		model.addAttribute("package", travelPackage);
+		return "travelPackage";
 	}
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/travelPackages")
