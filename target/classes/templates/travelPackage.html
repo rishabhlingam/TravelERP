@@ -9,18 +9,18 @@
 <ul>
     <li th:text="'maximum capacity: ' + ${package.capacity}"/>
     <li>List of destinations:</li>
-    <ol th:each="destination : ${package.itinerary.destinations}">
+    <ul th:each="destination : ${package.itinerary.destinations}">
         <li th:text="${destination.name}"/>
         <li>Activities available: </li>
-        <ol th:each="activity : ${destination.activities}">
+        <ul th:each="activity : ${destination.activities}">
             <li th:text="'Activity name: ' + ${activity.name}" />
             <ul>
                 <li th:text="'description: ' + ${activity.description}" />
                 <li th:text="'cost: ' + ${activity.cost}" />
                 <li th:text="'capacity: ' + ${activity.capacity}" />
             </ul>
-        </ol>
-    </ol>
+        </ul>
+    </ul>
 </ul>
 </body>
 </html>

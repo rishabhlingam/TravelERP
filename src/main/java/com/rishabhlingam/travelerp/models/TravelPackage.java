@@ -2,11 +2,7 @@ package com.rishabhlingam.travelerp.models;
 
 import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -20,7 +16,12 @@ public class TravelPackage {
 	private int capacity;
 	@OneToOne(mappedBy = "travelPackage")
 	private Itinerary itinerary;
-	@Transient //temporary
+	@ManyToMany
+	@JoinTable(
+			name="selectedPassengers",
+			joinColumns = @JoinColumn(name = "travelPackage_id"),
+			inverseJoinColumns = @JoinColumn(name = "passenger_id")
+	)
 	private List<Passenger> passengers;
 	public TravelPackage() {}
 	public TravelPackage(String name, int capacity) {
