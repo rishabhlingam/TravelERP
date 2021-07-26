@@ -1,15 +1,12 @@
 package com.rishabhlingam.travelerp.models;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 import org.hibernate.annotations.GenericGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.util.Set;
 
 @Entity
 public class Activity {
@@ -25,7 +22,13 @@ public class Activity {
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "destination_id", referencedColumnName = "id")
 	private Destination destination;
-	
+	@ManyToMany
+	@JoinTable(
+			name="enrolledPassengers",
+			joinColumns = @JoinColumn(name = "activity_id"),
+			inverseJoinColumns = @JoinColumn(name = "passenger_id")
+	)
+	private Set<Passenger> passengers;
 	public Activity() {}
 		
 	public Activity(String name, String description, double cost, int capacity) {
@@ -73,6 +76,12 @@ public class Activity {
 	public void setDestination(Destination destination) {
 		this.destination = destination;
 	}
+	public Set<Passenger> getPassengers() {
+		return passengers;
+	}
+	public void addPassengers(Passenger passenger) {
+		this.passengers.add(passenger);
+	}
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -86,6 +95,4 @@ public class Activity {
 		builder.append("\n");
 		return builder.toString();
 	}
-	
-	
 }

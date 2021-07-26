@@ -2,6 +2,7 @@ package com.rishabhlingam.travelerp.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,5 +35,13 @@ public class ActivityService {
 	
 	public void deleteActivity(String id) {
 		repository.deleteById(id);
+	}
+
+	public Optional<Activity> findById(String id){
+		return repository.findById(id);
+	}
+
+	public void updateActivity(Activity activity){
+		repository.save(activity);
 	}
 }

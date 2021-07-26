@@ -2,6 +2,7 @@ package com.rishabhlingam.travelerp.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,8 +24,8 @@ public class TravelPackageService {
 		return repository.save(i);
 	}
 	
-	public TravelPackage findById(String id) {
-		TravelPackage travelPackage = repository.findById(id).get();
+	public Optional<TravelPackage> findById(String id) {
+		Optional<TravelPackage> travelPackage = repository.findById(id);
 		return travelPackage;
 	}
 }

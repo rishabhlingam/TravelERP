@@ -2,26 +2,16 @@ package com.rishabhlingam.travelerp.controllers;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+import com.rishabhlingam.travelerp.models.*;
+import com.rishabhlingam.travelerp.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.rishabhlingam.travelerp.models.Activity;
-import com.rishabhlingam.travelerp.models.Destination;
-import com.rishabhlingam.travelerp.models.Itinerary;
-import com.rishabhlingam.travelerp.models.TravelPackage;
-import com.rishabhlingam.travelerp.services.ActivityService;
-import com.rishabhlingam.travelerp.services.DestinationService;
-import com.rishabhlingam.travelerp.services.ItineraryService;
-import com.rishabhlingam.travelerp.services.TravelPackageService;
+import org.springframework.web.bind.annotation.*;
 
 //@RestController
 @Controller
@@ -34,11 +24,11 @@ public class TravelPackageController {
 	private ItineraryService itineraryService;
 	@Autowired
 	private TravelPackageService travelPackageService;
+	@Autowired
+	private PassengerService passengerService;
 	
 	@RequestMapping("/travelPackages")
 	public String getAllDestinations(Model model) {
-		SecurityContext context = SecurityContextHolder.getContext();
-		System.out.println(context.getAuthentication().getName());
 		List<TravelPackage> packages = travelPackageService.getAllTravelPackages();
 		model.addAttribute("packages", packages);
 		return "viewTravelPackages";
@@ -46,11 +36,39 @@ public class TravelPackageController {
 	
 	@RequestMapping("/travelPackages/{id}")
 	public String getItineraryById(@PathVariable String id, Model model) {
-		TravelPackage travelPackage = travelPackageService.findById(id);
+		Optional<TravelPackage> optional = travelPackageService.findById(id);
+		if(!optional.isPresent()){
+			model.addAttribute("errorMessage", "Something went wrong. Could not find the package");
+			return "error";
+		}
+		TravelPackage travelPackage = optional.get();
+		model.addAttribute("vacancy", travelPackage.getCapacity() - travelPackage.getPassengers().size());
 		model.addAttribute("package", travelPackage);
 		return "travelPackage";
 	}
-	
+
+	@RequestMapping("/travelPackages/{id}/purchase")
+	public String purchasePackage(@PathVariable String id, Model model) {
+		Optional<TravelPackage> optional = travelPackageService.findById(id);
+		if(!optional.isPresent()){
+			model.addAttribute("errorMessage", "Something went wrong. Could not find the package");
+			return "error";
+		}
+		TravelPackage travelPackage = optional.get();
+		SecurityContext context = SecurityContextHolder.getContext();
+		String email = context.getAuthentication().getName();
+		Passenger passenger = passengerService.findByEmail(email);
+		if(travelPackage.getPassengers().size() < travelPackage.getCapacity()){
+			travelPackage.addPassengers(passenger);
+			travelPackageService.addTravelPackage(travelPackage);
+			return "redirect:/travelPackages/"+id;
+		} else {
+			model.addAttribute("errorMessage", "Can not purchase, max capacity reached. Try another package :(");
+			return "error";
+		}
+	}
+
+	@ResponseBody
 	@RequestMapping(method = RequestMethod.POST, value = "/travelPackages")
 	public void addItinerary( @RequestBody Map<String, Object> map){
 		String name = (String) map.get("name");

@@ -1,6 +1,8 @@
 package com.rishabhlingam.travelerp.models;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.*;
 
@@ -22,7 +24,7 @@ public class TravelPackage {
 			joinColumns = @JoinColumn(name = "travelPackage_id"),
 			inverseJoinColumns = @JoinColumn(name = "passenger_id")
 	)
-	private List<Passenger> passengers;
+	private Set<Passenger> passengers = new HashSet<>();
 	public TravelPackage() {}
 	public TravelPackage(String name, int capacity) {
 		super();
@@ -53,11 +55,11 @@ public class TravelPackage {
 	public void setItinerary(Itinerary itinerary) {
 		this.itinerary = itinerary;
 	}
-	public List<Passenger> getPassengers() {
+	public Set<Passenger> getPassengers() {
 		return passengers;
 	}
-	public void setPassengers(List<Passenger> passengers) {
-		this.passengers = passengers;
+	public void addPassengers(Passenger passenger) {
+		this.passengers.add(passenger);
 	}
 	@Override
 	public String toString() {
@@ -68,7 +70,18 @@ public class TravelPackage {
 		builder.append("\n");
 		builder.append( getItinerary().toString());
 		builder.append("\n");
-		//passengers
+		return builder.toString();
+	}
+
+	public String printPassengerList(){
+		StringBuilder builder = new StringBuilder();
+		builder.append("Package Name: " + getName() + "\n")
+				.append("Passenger Capacity: " + getCapacity() + "\n")
+				.append("No. passengers enrolled: " + getPassengers().size() + "\n")
+				.append("\nPassenger List:\n");
+		for(Passenger passenger : getPassengers()){
+			builder.append(passenger.getName() + " (" + passenger.getId() + ")\n");
+		}
 		return builder.toString();
 	}
 }

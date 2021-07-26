@@ -3,6 +3,8 @@ package com.rishabhlingam.travelerp.controllers;
 import com.rishabhlingam.travelerp.models.Passenger;
 import com.rishabhlingam.travelerp.services.PassengerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,10 +19,9 @@ public class MainController {
     @Autowired
     private PassengerService passengerService;
 
-	@RequestMapping("/login")
-    public String getLoginPage(Model model){
-	    model.addAttribute("title", "Login Page");
-	    return "login";
+    @RequestMapping("/")
+    public String getHomePage(Model model){
+        return "home";
     }
 
     @RequestMapping("/signup")
@@ -28,12 +29,24 @@ public class MainController {
         return "signup";
     }
 
+    @RequestMapping("/user")
+    public String getUserPage(Model model){
+        SecurityContext context = SecurityContextHolder.getContext();
+        String email = context.getAuthentication().getName();
+        Passenger passenger = passengerService.findByEmail(email);
+        model.addAttribute("passenger", passenger);
+	    return "user";
+    }
+
     @RequestMapping(method = RequestMethod.POST, value = "/signup")
-    public Passenger registerUser(@RequestParam String name,
-                             @RequestParam String email){
-        Passenger passenger = new Passenger(name, email);
+    public String registerUser(@RequestParam String name,
+                               @RequestParam String email,
+                               @RequestParam String userType,
+                               @RequestParam double balance){
+        Passenger passenger = new Passenger(name, email, balance, userType);
         passenger = passengerService.addPassenger(passenger);
-        return passenger;
+        System.out.println(passenger);
+        return "redirect:/travelPackages/";
     }
 
     @ResponseBody

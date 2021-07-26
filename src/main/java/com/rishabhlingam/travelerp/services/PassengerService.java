@@ -28,4 +28,8 @@ public class PassengerService {
     public Passenger getPassenger(String id){
         return repository.findById(id).get();
     }
+
+    public Passenger findByEmail(String email){
+        return repository.findByEmail(email).get();
+    }
 }
