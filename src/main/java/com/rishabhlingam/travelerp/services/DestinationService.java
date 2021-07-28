@@ -2,6 +2,7 @@ package com.rishabhlingam.travelerp.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,8 @@ import com.rishabhlingam.travelerp.repository.DesinationRepository;
 public class DestinationService {
 	@Autowired
 	private DesinationRepository repository;
+	@Autowired
+	private ActivityService activityService;
 	
 	public List<Destination> getAllDestinations(){
 		List<Destination> list = new ArrayList<>();
@@ -35,5 +38,14 @@ public class DestinationService {
 	public Destination findById(String id) {
 		Destination destination = repository.findById(id).get();
 		return destination;
+	}
+
+	public void addDestinationList(List<Map<String, Object>> list, Itinerary itinerary) {
+		for(Map<String, Object> object : list) {
+			String destName = (String) object.get("name");
+			Destination destination = new Destination(destName);
+			destination = addDestination(destination, itinerary);
+			activityService.addActivityList((List) object.get("activities"), destination);
+		}
 	}
 }
